@@ -1,0 +1,68 @@
+from sklearn import svm
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+def run(instance) :
+	f = open('train.tsv')
+	lines = f.readlines()
+	X = []
+	Y = []
+	head = 'true'
+	vct = CountVectorizer(ngram_range=(1, 2),token_pattern=r'\b\w+\b', max_df=1)
+	for line in lines :
+	  if(head=='true') :
+		head = 'false'
+	  else :
+		l = line.strip().split('\t')
+		Y.append(l[len(l)-1])
+		X.append(l[2])
+		
+	print('\n==========ended parsing data===============')	
+	X_t = vct.fit_transform(X)
+	print('\n============ transformation done==============')
+	#print(Y)
+	#print(X)
+	
+	#clf = svm.SVC()
+	
+	clf =MultinomialNB()
+	print('\n=============training classifier==================')
+	clf.fit(X_t,Y)
+
+	print('\nReading test file...')
+	ftest = open('test.tsv')
+	tlines = ftest.readlines()
+
+	t_x = []
+#	vct_test = CountVectorizer(ngram_range=(1, 2),token_pattern=r'\b\w+\b', max_df=1)
+	for line in lines :
+	  if(head=='true') :
+		head = 'false'
+	  else :
+		l = line.strip().split('\t')
+		t_x.append(l[2])
+	
+	print('\nStarting test transformation...')
+	
+	
+	t_x_t = vct.fit_transform(t_x)
+	print('\n predicting...')
+	
+	print(t_x[instance])
+	print(clf.predict(t_x_t[instance]))
+	print('\nWriting output to file')
+
+	output = open('./output.csv', 'w')
+
+	for val in range(len(t_x)):
+		output.write(t_x[val])
+		output.write("\t")
+		output.write(clf.predict(t_x_t[val]))		
+		output.write("\n")		
+	output.close()
+
+	print('==========END============')
+instance =50
+run(instance)
+
+
+
