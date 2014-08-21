@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 #from senti_classifier import senti_classifier
-def run(instance) :
+def run() :
 	#sentences = ['The movie was the worst movie', 'It was the worst acting by the actors']
 	#pos_score, neg_score = senti_classifier.polarity_scores(sentences)
 	#print pos_score, neg_score
@@ -24,6 +24,7 @@ def run(instance) :
 	test_data = pd.read_csv('test.tsv' , delimiter= '\t')
 	X_new_counts = count_vect.transform(test_data['Phrase'])
 	X_new_tfidf = tfidf_transformer.transform(X_new_counts)
+	
 	predicted = clf.predict(X_new_tfidf)
 
 	output = open('./output-nb.csv', 'w')
@@ -43,18 +44,7 @@ def run(instance) :
 
 	print('==========END============')
 
-def getsentiment(senti, line) :
-	score = 0.0
-	words = line.rsplit(' ')
-	last_word =''
-	for word in words :	
-		if(word in senti) :
-			score += float(senti[word])
-					
-	score = score/len(words)
-	return score		
-instance =50
-run(instance)
+run()
 
 
 
